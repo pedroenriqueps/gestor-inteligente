@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.container-desktop-form {
+    @apply flex flex-col justify-center items-center h-screen;
+}
+
+.desktop-form {
+    @apply p-6 w-[33%];
+}
+
+.desktop-input-form {
+    @apply w-full rounded border border-yellow-400 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-transparent;
+}
