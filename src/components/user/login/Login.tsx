@@ -1,35 +1,50 @@
-"use client"
+"use client";
 
-import { useForm } from "react-hook-form"
-import { useState } from "react"
-import { FaEye, FaEyeSlash } from "react-icons/fa"
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { userLoginSchema } from "@/utils/schemas/login-schema"; // Ajuste o caminho conforme necessário
+import { toast } from "react-toastify"; // Importando o Toastify
+import "react-toastify/dist/ReactToastify.css"; // Certifique-se de importar o CSS
 
 interface UserLoginInterface {
-    email: string
-    password: string
+    email: string;
+    password: string;
 }
 
 export function UserLogin() {
-    const { register, handleSubmit } = useForm<UserLoginInterface>()
-    const [showPassword, setShowPassword] = useState(false)
+    const { register, handleSubmit, formState: { errors } } = useForm<UserLoginInterface>({
+        resolver: zodResolver(userLoginSchema),
+    });
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleUserForm = (dataUser: UserLoginInterface) => {
-        console.log(dataUser)
-    }
+        console.log(dataUser);
+    };
 
     const togglePasswordVisibility = () => {
-        setShowPassword((prev) => !prev)
-    }
+        setShowPassword((prev) => !prev);
+    };
+
+    const showErrorMessages = () => {
+        if (errors.email) {
+            toast.error(errors.email.message);
+            return;
+        }
+        if (errors.password) {
+            toast.error(errors.password.message);
+            return;
+        }
+    };
 
     return (
         <div className="container-desktop-form">
             <h1 className="text-3xl text-yellow-400 font-semibold">
                 Fazer Login
             </h1>
-            <form
-                onSubmit={handleSubmit(handleUserForm)}
-                className="desktop-form"
-            >
+            <form onSubmit={(e) => { handleSubmit(handleUserForm)(e); showErrorMessages(); }} className="desktop-form">
                 <fieldset className="mb-2">
                     <label
                         htmlFor="email"
@@ -69,7 +84,6 @@ export function UserLogin() {
                             <FaEye className="text-yellow-400" />
                         )}
                     </span>
-
                 </fieldset>
                 <fieldset>
                     <button
@@ -79,7 +93,14 @@ export function UserLogin() {
                         Entrar
                     </button>
                 </fieldset>
+                <div className="flex items-center justify-center my-4">
+                    <p>Ainda não tem conta?</p>
+                    <Link href="/user/register" className="text-blue-300 ml-2">Clique aqui</Link>
+                </div>
+                <div className="text-center my-2">
+                    <p>Se por acaso esquecer seu email ou senha, entre em contato com a nossa equipe.</p>
+                </div>
             </form>
         </div>
-    )
+    );
 }
